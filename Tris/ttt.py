@@ -330,7 +330,7 @@ def quit(bot, trigger):
 @plugin.example(".help ttt", ".help tictactoe")
 def brishelp(bot, trigger):
     if trigger.sender in game_chan:
-        bot.notice(CONTROL_COLOR + CONTROL_BOLD + colors.YELLOW + "GUIDE: " + CONTROL_NORMAL + string_help_eng, trigger.nick)
+        bot.notice(CONTROL_BOLD + CONTROL_COLOR +  colors.YELLOW + "GUIDE: " + CONTROL_NORMAL + string_help_eng, trigger.nick)
 
 
 @plugin.event("PART")
