@@ -19,7 +19,7 @@ Commands:
 3. *cmd* `.play` : Put your sign on a slot. *ex: `.play A2`*
 4. *cmd* `.join` : Joins the match.
 5. *cmd* `.quit` : Quits the game.
-6. *cmd* `.help ttt` : Provide a file with game help.
+6. *cmd* `.help ttt` : Provide a file with game help. ([FILE](https://github.com/giovannetor/GIO-SL/blob/master/Tris/files/ttt_help_eng.txt))
 6. *cmd* `.adstop ttt` _(admin only)_ : Forcefully stops the game. 
 
 Events:
