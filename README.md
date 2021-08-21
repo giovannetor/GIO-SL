@@ -1,3 +1,5 @@
+![alt text](https://github.com/giovannetor/Trinacry/blob/main/perlogo_small.png)
+
 # GIO-SL
 
 Hi! In this repos I'll put all of my work which I wish to share with SL.
