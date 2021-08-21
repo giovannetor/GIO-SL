@@ -26,7 +26,7 @@ Events:
 1. *ev* `QUIT` : Triggered when the user quits. Executes `.quit`
 2. *ev* `LEAVE` : Triggered when the user leaves. Executes `.quit`
 
-NOTES:
+### NOTES:
 - The logs are sent by default in the channel `#trinacry-logs`. This can be changed at `LINE 14`
 - The game is only allowed to run in some channels, by default `#games`,`#TicTacToe`. This can be changed at `LINE 15`
 - Requires Sopel 8.0.0.dev0 (7.* is usable too, just change `LINE 2` with `import sopel.modules as plugin`)
