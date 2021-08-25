@@ -16,18 +16,47 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
-import sopel.plugin as plugin
 import threading
+
+import sopel.plugin as plugin
 from sopel import config
 from sopel.formatting import colors, CONTROL_BOLD, CONTROL_COLOR, CONTROL_NORMAL
 
 settings = config.Config('/Users/giova/.sopel/default.cfg')  # replace with the config path
-game_chan = settings.ttt.ttt_chans
+
+from sopel.config.types import StaticSection, ListAttribute, ValidatedAttribute
+
+game_chan = None
+
+
+# Called when the module gets loaded
+def setup(bot):
+    bot.config.define_section("TicTacToe", TicTacToeConfigSection)
+
+    # Set the allowed game channels
+    global game_chan
+    global log_chan
+    game_chan = bot.config.TicTacToe.gamechannels
+    log_chan = bot.config.TicTacToe.logchannels
+
+
+# Called when the module gets configured
+def configure(config):
+    config.define_section("TicTacToe", TicTacToeConfigSection)
+    config.TicTacToe.configure_setting("gamechannels", "In what channels is TicTacToe allowed to be played?")
+    config.TicTacToe.configure_setting("logchannels", "In what channels will TicTacToe send logs?")
+
+
+# Class with the settings for tictactoe
+class TicTacToeConfigSection(StaticSection):
+    gamechannels = ListAttribute("gamechannels")
+    logchannels = ValidatedAttribute("logchannels")
+
+
 """
 I didn't really understand how to link the code to the config file, so
 you'll have to write the [ttt] section in the config file manually... :)
 """
-log_chan = settings.core.logging_channel
 
 # Format for the X, O and the word "TicTacToe" in-game
 X = CONTROL_BOLD + CONTROL_COLOR + colors.LIGHT_CYAN + "X" + CONTROL_NORMAL
@@ -44,7 +73,6 @@ They can easily be translate to any language.
 
 The link for the help sends to a .txt file. Can be easily changed with another type of link.
 """
-
 string_help_eng = "https://webchat.duckie.chat/uploads/f8cf4c3ee8bac268/paste.txt"
 strings_eng = {"cant_join": "I'm sorry %s , the max number of players is 2. Wait until next match :)",
                "cant_play": "You are not inside the match, please do not disturb the other players :)",
@@ -118,7 +146,7 @@ class tttgame:  # this class thinks about the "RULES" side of the game
         cmd = trigger.group(3).upper()
 
         if any([len(cmd) != 2, cmd[0] not in "ABC",
-               cmd[1] not in "123"]):  # if at least one of these it's true, the it's wrong
+                cmd[1] not in "123"]):  # if at least one of these it's true, the it's wrong
             bot.say(self.string["wrong_format"] % cmd)
             return
 
@@ -188,7 +216,7 @@ class tttgame:  # this class thinks about the "RULES" side of the game
             check_dic[str(combination[1])] += 1
 
         if any([max(check_dic.values()) == 3, all(["A1" in squ, "B2" in squ, "C3" in squ]),
-               all(["A3" in squ, "B2" in squ, "C1" in squ])]):  # if the player has 3 letters or 3 numbers, it's a Win
+                all(["A3" in squ, "B2" in squ, "C1" in squ])]):  # if the player has 3 letters or 3 numbers, it's a Win
             return True
         return False
 
