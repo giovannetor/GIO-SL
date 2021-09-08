@@ -73,7 +73,7 @@ They can easily be translate to any language.
 
 The link for the help sends to a .txt file. Can be easily changed with another type of link.
 """
-string_help_eng = "https://webchat.duckie.chat/uploads/f8cf4c3ee8bac268/paste.txt"
+string_help_eng = "https://www.scoutlink.net/tictactoe"
 strings_eng = {"cant_join": "I'm sorry %s , the max number of players is 2. Wait until next match :)",
                "cant_play": "You are not inside the match, please do not disturb the other players :)",
                "start": "Players Reached! Let's play " + TRIS + "!!",
