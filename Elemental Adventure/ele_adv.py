@@ -1097,7 +1097,7 @@ def adrank(bot, trigger):
     bot.say("[" + ELEMENTAL + "] : " + trigger.nick + " requestes the RANK of " + trigger.group(3), log_chan)
 
 
-@module.commands("Elemental Adventure", "elad", "ElAd")
+@module.commands("elemental adventure", "elad", "ElAd")
 @module.example(".Elemental Adventure")
 @module.priority('high')
 @module.require_chanmsg("Ehy hi, please use this command in a chan.")
@@ -1165,7 +1165,7 @@ def unoplay(bot, trigger):
 
 
 @module.commands("teams", "tm")
-@module.require_admin("Only admins can see team scores.")
+@module.require_admin("Only admins can see team reputation.")
 def teams(bot, trigger):
     if trigger.sender in game_chan:
         elad.teams(bot, trigger)
@@ -1224,8 +1224,3 @@ def eladgames(bot, trigger):
 def afktime(bot):
     elad.afktime(bot)
     elad.checkidle(bot)
-
-
-@module.commands("gtest")
-def gtest(bot, trigger):
-    bot.say(EARTH + "EARTH " + FIRE + "FIRE " + WATER + "WATER " + AIR + "AIR ")
