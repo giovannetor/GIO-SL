@@ -2,7 +2,7 @@
 ════════════════════════════════════════════════════════════════════════════════════════════════════════
 COMANDO    | COMANDO COMPRESSO | COSA FA?",
 ════════════════════════════════════════════════════════════════════════════════════════════════════════
--- Comandi per Utenti
+-- Comandi per Utenti --
 .elemental adventure | .elad | Apre la lobby. Non starta il gioco.
 .join      | .jo | Unisciti alla partita.
 .quit      | .qu | Abbandona la partita. ATTENZIONE! Se la partita è iniziata, vincerà la squadra avversaria
@@ -20,3 +20,12 @@ COMANDO    | COMANDO COMPRESSO | COSA FA?",
 .adstop elad |  | Forza l'arresto di una partita.
 .eladgames |.eladgm | Mostra in quali canali una partita è in corso.
 ═══════════════════════════════════════════════════════════════════════════════════════════════════════
+ESEMPIO DI UNA CARTA
+
+        [id] Elemento Eroe |⚔ atk |✪ rep|
+
+id: L'id unico di un Eroe. Usa .play <id> per usarlo.
+Element: L'Elemento di un Eroe.
+Hero: L'Eroe che stai usando.
+atk: La stat che definisce la potenza di un Eroe sul campo.
+rep: La stat che definisce il valore di un Eroe.

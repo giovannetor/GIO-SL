@@ -1,0 +1,31 @@
+ |||||   HELP PAGE OF:   ELEMENTAL ADVENTURE    |||||
+════════════════════════════════════════════════════════════════════════════════════════════════════════
+COMMAND    | SHORT COMMAND | WHAT'S IT?
+════════════════════════════════════════════════════════════════════════════════════════════════════════
+-- User Commands --
+.elemental adventure | .elad | Opens the lobby. Doesn't start the game.
+.join      | .jo | Joins the match.
+.quit      | .qu | Leave the match. ATTENTION! The enemy will win.
+.deal      | .de | Start the match.
+.play      | .pl | Play a Hero.
+.cards     | .ca | Shows the Heroes in your hand, and the Enhanced Element.
+.help elad |     | How did you get here without knowing? XD
+.language  |.lan | Change the game's language (available english and italian)
+.rank      |     | Show your stats.
+
+-- Admin Commands --
+.adrank    |    | Shows another player's stats.
+.teams     |.tm | Show each team's reputation.
+.eladmove  |    | Moves a match in another chan.
+.adstop elad |  | Forcefully stops a match.
+.eladgames |.eladgm | Shows in what chans a match is ongoing.
+═══════════════════════════════════════════════════════════════════════════════════════════════════════
+CARD EXAMPLE
+
+        [id] Element Hero |⚔ atk |✪ rep|
+
+id: It's the Hero's unique ID. Use .play <id> to use it.
+Element: The Hero's Element.
+Hero: The Hero you're using.
+atk: The stat that defines how powerful a Hero is on the Field.
+rep: The stat that defines how much a Hero is worth.
