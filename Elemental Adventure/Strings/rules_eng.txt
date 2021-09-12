@@ -1,0 +1,24 @@
+   ════════════════════
+ ELEMENTAL ADVENTURE RULES
+   ════════════════════
+
+   --WHAT IS THE GOAL?--
+   The Adventure Begins! Two teams (1-2 players each) challenge each other
+   to obtain as much Reputation as possible through their Elemental Heroes.
+
+   ====================================================================
+   --HOW DO YOU WIN A TURN--
+   The player who starts the turn plays a Hero.
+
+   The following players, in order to win the turn, must play a Hero of the SAME Element
+   but higher Atk, OR a Hero of the Enhanced Element.
+
+   When an Enhanced Hero is on the Field, no enemy is worth enough to beat him apart from another
+   Enhanced Hero of higher Atk.
+
+   The player having the stronger Hero on the Field wins the Turn and earns the sum of all the
+   Heroes Reputation. Then the Field gets cleaned and the winning players starts the next turn.
+   =====================================================================
+
+   CARD EXAMPLE:        [id] Element Hero |⚔ atk |✪ rep|
+

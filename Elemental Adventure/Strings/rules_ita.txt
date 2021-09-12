@@ -1,0 +1,23 @@
+   ════════════════════
+ ELEMENTAL ADVENTURE REGOLE
+   ════════════════════
+
+   --COME SI VINCE?--
+   L'avventura inizia! Due Team (1-2 giocatori ognuno) si sfidano
+   per ottenere la maggior Reputazione possibile tramite i propri Eroi.
+
+   ====================================================================
+   --COME VINCERE UN TURNO--
+   Il primo giocatore sceglie un Eroe.
+
+   I giocatori seguenti, per vincere, devono giocare un Eroe dello STESSO Elemento
+   ma Atk maggiore, O un Eroe Enhanced.
+
+   Quando un Eroe Enhanced è sul campo, nessuno può riuscire a batterlo TRANNE un altro
+   Eroe Enhanced di Atk maggiore.
+
+   Il giocatore avente l'Eroe più forte sul campo vince il Turno e guadagna la somma di tutte le
+   Reputazioni degli Eroi sul Campo. Poi il Campo viene sgomberato, e il giocatore vincente inizia il prossimo turno.
+   =====================================================================
+
+   CARD EXAMPLE:        [id] Element Hero |⚔ atk |✪ rep|
