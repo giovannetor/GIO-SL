@@ -147,7 +147,7 @@ class tttgame:  # this class thinks about the "RULES" side of the game
 
         if any([len(cmd) != 2, cmd[0] not in "ABC",
                 cmd[1] not in "123"]):  # if at least one of these it's true, the it's wrong
-            bot.say(self.string["wrong_format"] % cmd)
+            bot.say(self.strings["wrong_format"] % cmd)
             return
 
         cp = self.check_possible(player, cmd)  # Checks if it's possible to make the move. Check the function.

@@ -1,0 +1,18 @@
+     |||||   PAGINA DI AIUTO DI:   ELEMENTAL ADVENTURE    |||||
+    ════════════════════════════════════════════════════════════════════════════════════════════════════════
+    COMANDO    | COMANDO COMPRESSO | COSA FA?",
+    ════════════════════════════════════════════════════════════════════════════════════════════════════════
+    .briscola  | .bris  .br | Apre la lobby. Non starta il gioco.
+    .join      | .jo | Ti unisce alla partita.
+    .quit      | .qu | Abbandona la partita. ATTENZIONE! se la partita è iniziata, vincerà la squadra avversaria
+    .deal      | .de | Starta la partita. Non si torna indietro.
+    .play      | .pl | Gioca una carta.
+    .cards     | .ca | Mostra le carte nella tua mano, e la Briscola.
+    .brishelp  |.brhelp | Come sei arrivato fino a qui senza saperlo? O.o
+    .rules     |.ru | Mostra le REGOLE del GIOCO
+    .language  |.lan| Cambia la lingua del gioco (disponibili english e italiano)
+    ═══════════════════════════════════════════════════════════════════════════════════════════════════════
+
+    COME GIOCARE UNA CARTA: .play C S o .play S C (S = Seme della carta , V = Valore della carta)
+    Semi possibili: S (spade) , M (mazze) , O (oro) , C (coppe)
+    Valori possibili: ogni numero da 1 a 10
