@@ -20,15 +20,12 @@ import random
 import threading
 from datetime import datetime
 from pprint import pprint
-from time import  sleep
+from time import sleep
+
 import sopel.plugin as module
 import sopel.tools as tools
-from sopel import config
-from sopel.formatting import colors, CONTROL_BOLD, CONTROL_COLOR, CONTROL_NORMAL
-
-settings = config.Config('/Users/giova/.sopel/default.cfg')  # replace with the config path
-
 from sopel.config.types import StaticSection, ListAttribute, ValidatedAttribute
+from sopel.formatting import colors, CONTROL_BOLD, CONTROL_COLOR, CONTROL_NORMAL
 
 game_chan = None
 
@@ -214,7 +211,7 @@ class ElAdGame:
         self.channel = trigger.sender
         self.deck = []
         self.players = {self.starter: {"cards": {}, "idletime": 0}}  # player's dict. each player will have a card list
-        self.playerOrder = [self.starter]  # player order. it will mostly be used paired with self.currentPlayer
+        self.playerOrder = [self.starter]
         self.currentPlayer = 0
         self.previousPlayer = None
         self.way = 1
@@ -273,7 +270,7 @@ class ElAdGame:
                 if len(self.team2) < len(
                         self.team1):  # forms the teams (always have 2 teams. can't play in 3. team members = 1 or 2 each)
                     self.team2.append(
-                        trigger.nick)  # a 3 player version exists, slightly different rules, maybe in the future
+                        trigger.nick)
                     bot.say(self.strings["joined"] % (trigger.nick, "2"))
                 elif len(self.team2) > len(self.team1):
                     self.team1.append(trigger.nick)
@@ -306,9 +303,9 @@ class ElAdGame:
                 return
             with lock:
                 bot.say(strings['player_quit'] % player)
-                return #self.remove_player(bot, player)
+                return
         elif idle:
-            return #self.remove_player(bot, trigger)
+            return
 
     def deal(self, bot, trigger):  # deal the game. everyone in the game can do it, owner not required.
         if trigger.nick not in self.players:
@@ -330,18 +327,16 @@ class ElAdGame:
             self.startTime = datetime.now()
             self.deck = self.create_deck()  # create the deck (check the function)
             self.bonus = random.choice(list(
-                elements.keys()))  # make a "bonus" recognizable for the _render_coloured_cards method. e.g. bonus: "4M*"
-            # adds the bonus to the bonus list. ONLY ONE CARD will be here, that will decide the seed of the bonus
+                elements.keys()))
             for player_list in self.players:
                 while len(self.players[player_list]["cards"]) < 3:
                     card = self.get_card(bot)
                     self.players[player_list]["cards"][card[
-                        "id"]] = card  # gives 3 cards to each player. sometimes it gets bugged, no idea why, and gives less cards
+                        "id"]] = card
                 for card_id in self.players[player_list]["cards"]:
                     self.players[player_list]["cards"][card_id]["owner"] = player_list
             self.dealt = YES
             self.currentPlayer = random.randrange(len(self.players))
-            # il primo giocatore è scelto a caso
             self.show_on_turn(bot)
 
             if len(self.bonus) == 0:
@@ -360,41 +355,39 @@ class ElAdGame:
         self.players[self.playerOrder[self.currentPlayer]]["idletime"] = 0
         id = trigger.group(3)
         with lock:
-            # this decides the INDEX of the current player in the self.playerOder LIST. giocatore = player (translation tip)
+
             if id not in self.players[trigger.nick]["cards"]:
                 bot.notice(self.strings['non_hai'] % (id, trigger.nick), trigger.nick)
                 return
             card = self.players[trigger.nick]["cards"][id]
             self.ontable.append(
-                card)  # append the card ("4C giovannetor" format) to the "ontable" list. this list is temporary, gets emptied each full turn
+                card)
             self.players[trigger.nick]["cards"].pop(
-                id)  # removes from the player's card list the card in the "4C" format
+                id)
             self.inc_player(bot, trigger)  # increase the player.
             self.show_on_turn(bot)  # shows who's the turn now
 
-    def decidepoint(self, bot):  # decides who earns the point of the turn. THIS IS WHAT CREATES MOST OF THE PROBLEMS
-        self.bonus_ontable.clear()  # creates a list of BRISCOLA on table (temporary, get emptied at the end)
+    def decidepoint(self, bot):
+        self.bonus_ontable.clear()
         carcom = self.ontable[
             0]  # the first card in the self.ontable is the "command card". to win a turn, the other cards must have same seed and > number, OR be a bonus
         # bonus always wins. if there are more bonus, the highest wins
 
-        for c in range(1,
-                       len(self.ontable)):  # analyzes the cards in the .ontable one by one. if one of the same seed
-            # has number > carcom, it becomes the new carcom
-            card_sfid = self.ontable[c]  # c is just an index
+        for c in range(1, len(self.ontable)):
+            card_sfid = self.ontable[c]
             if card_sfid["seedstr"] == carcom["seedstr"]:
                 if card_sfid["atk"] > carcom["atk"]:
-                    carcom = card_sfid  # important! cards on the table have different value than when counted as points. ***
-            elif card_sfid["seedstr"] == self.bonus:  # if he finds a bonus, he adds it in the bris_ontable list
+                    carcom = card_sfid
+            elif card_sfid["seedstr"] == self.bonus:
                 self.bonus_ontable.append(card_sfid)
 
         if len(self.bonus_ontable) > 1:  # if there are more than 1 bonus, it compares them and choose the highest
             carcom = self.bonus_ontable[0]
             for numero in range(1, len(self.bonus_ontable)):
                 carsfid = self.bonus_ontable[
-                    numero]  # ***e.g.  10 = 10 on table, but = 4 as point. 7 = 7 on table, but = 0 as point.
+                    numero]
                 if carsfid["atk"] > carcom[
-                    "atk"]:  # 1 = 11 on table, and = 11 as point   (these are not errors, it's how the game is XD)
+                    "atk"]:
                     carcom = carsfid
 
             cardwin = carcom
@@ -403,9 +396,8 @@ class ElAdGame:
         else:
             cardwin = carcom  # if there are no bonus, the highest normal card wins
         plwin = cardwin[
-            "owner"]  # remember that the cards are in the format "4C giovannetor". bonus are in the format "5M* Mina". the "*" for all the bonus gets
-        # added in the self.getcard(), and it's only used to render the colours
-        return plwin  # <-- this is the main problem. This should be a nick, but it's a NoneType, which makes the whole program crash (or i think this is the problem)
+            "owner"]
+        return plwin
 
     def givepoint(self, bot,
                   plwin):  # the past funcion decided WHO earned the points. this one decides how many points the team earns. it takes the "plwin" from the part function
@@ -413,9 +405,9 @@ class ElAdGame:
         punti2prima = self.team2[-1]
         if plwin in self.team1:  # if player in team 1
             for card_dict in self.ontable:  # for card in the .ontable list (not yet emptied)
-                numero = card_dict["rep"]  # takes the number of the card (remember, format "9S giovannetor"
+                numero = card_dict["rep"]
                 self.team1[-1] += int(
-                    numero)  # the dict valori contains the point value of cards. remeber that the team1 list has an empty int at the end.
+                    numero)
             bot.say(self.strings["team_earn"] % ("1", str(self.team1[-1] - punti1prima)))
 
         else:
@@ -445,20 +437,18 @@ class ElAdGame:
             for i in self.players[trigger]["cards"]:
                 cards.append(i)
 
-                # trova le carte nel dizionario, renderizzate sotto V
             bot.notice("=========================================", trigger)
             bot.notice(self.strings['tue_carte'] % (str(self._render_colored_cards(self.players[trigger]["cards"]))),
                        trigger)
             bot.notice(self.strings["bonus"] % (str(self._render_bonus(bonus))), trigger)
             bot.notice("=========================================", trigger)
-            # importante! le info personali vanno mandate come notifica, non con .say
+
 
     def inc_player(self, bot, trigger):  # actually send the next player to play
         with lock:
 
-            if len(self.players) == 2:  # important part!! a turn consist of each player paying a card, then counting who wins the turn, then starting another turn till the
-                if len(self.ontable) == 2:  # cards in the deck are done. i used self.turncounter == 2, but for some reason it triggered at 1st turn instead of 2nd
-                    # this piece is for 2 player match. later there's the 4 players module
+            if len(self.players) == 2:
+                if len(self.ontable) == 2:
 
                     self.currentPlayer = self.playerOrder.index(self.decidepoint(bot))
                     self.givepoint(bot, self.playerOrder[
@@ -470,7 +460,7 @@ class ElAdGame:
                             while len(self.players[player_list]["cards"]) < 3:
                                 card = self.get_card(bot)
                                 self.players[player_list]["cards"][card[
-                                    "id"]] = card  # gives 3 cards to each player. sometimes it gets bugged, no idea why, and gives less cards
+                                    "id"]] = card  # gives 3 cards to each player.
                             for card_id in self.players[player_list]["cards"]:
                                 self.players[player_list]["cards"][card_id]["owner"] = player_list
 
@@ -487,20 +477,15 @@ class ElAdGame:
                             return WIN
 
                 else:
-                    self.previousPlayer = self.currentPlayer  # if not all the players have played a card, the turn goes on as normal.
+                    self.previousPlayer = self.currentPlayer
                     self.currentPlayer += 1
                 if self.currentPlayer >= len(self.players):
                     self.currentPlayer = 0
 
-            if len(self.players) == 4:  # important part!! a turn consist of each player paying a card, then counting who wins the turn, then starting another turn till the
-                if len(self.ontable) == 4:  # cards in the deck are done. i used self.turncounter == 2, but for some reason it triggered at 1st turn instead of 2nd
-                    # this piece is for 2 player match. later there's the 4 players module
+            if len(self.players) == 4:
+                if len(self.ontable) == 4:
 
-                    self.currentPlayer = self.playerOrder.index(
-                        self.decidepoint(bot))  # PROBLEM! .currentPlayer shall be an index, but it's NoneType.
-                    # game rule i forgot to explain: who wins the turn, is the first one to start and draw the next one
-                    # at the end of each turn, all the players draw a card. always 3 cards in the hand, no more, no less
-                    # except for the last 3 turns.
+                    self.currentPlayer = self.playerOrder.index(self.decidepoint(bot))
                     self.givepoint(bot, self.playerOrder[
                         self.currentPlayer])  # adds the points to the team of the winner decided by .decidepoint
                     bot.say(self.strings["mano_win"] % (self.playerOrder[self.currentPlayer]))
@@ -510,9 +495,9 @@ class ElAdGame:
                             while len(self.players[player_list]["cards"]) < 3:
                                 card = self.get_card(bot)
                                 self.players[player_list]["cards"][card[
-                                    "id"]] = card  # gives 3 cards to each player. sometimes it gets bugged, no idea why, and gives less cards
+                                    "id"]] = card  # gives 3 cards to each player. Sets the card's id the same as the key
                             for card_id in self.players[player_list]["cards"]:
-                                self.players[player_list]["cards"][card_id]["owner"] = player_list
+                                self.players[player_list]["cards"][card_id]["owner"] = player_list # sets the card's owner
 
                     if self.lastturn and self.changecount == 0:
                         bot.say(strings["change_time"])
@@ -601,7 +586,7 @@ class ElAdGame:
             ret = []
             for card in cards:
                 CARTA = card
-                if CARTA["seedstr"] == self.bonus:  # distingue le briscole per seme. DA OTTIMIZZARE
+                if CARTA["seedstr"] == self.bonus:
                     ret.append(CARTA["seed"] + " ** [%s] %s %s |⚔ %s|✪ %s| ** " % (
                         CARTA["id"], CARTA["seedstr"], CARTA["name"], str(CARTA["atk"]),
                         str(CARTA["rep"])) + CONTROL_NORMAL + "  ")
@@ -612,13 +597,13 @@ class ElAdGame:
 
         return ''.join(ret) + CONTROL_NORMAL
 
-    def _render_colored_cards(self, cards):  # renderizza colori carte
+    def _render_colored_cards(self, cards):
 
         with lock:
             ret = []
             for card in cards:
                 CARTA = cards[card]
-                if CARTA["seedstr"] == self.bonus:  # distingue le briscole per seme. DA OTTIMIZZARE
+                if CARTA["seedstr"] == self.bonus:
                     ret.append(CARTA["seed"] + " ** [%s] %s %s |⚔ %s|✪ %s| ** " % (
                         CARTA["id"], CARTA["seedstr"], CARTA["name"], str(CARTA["atk"]),
                         str(CARTA["rep"])) + CONTROL_NORMAL + "  ")
@@ -668,15 +653,12 @@ class ElAdGame:
 
 
 class ElAdBot:
-    def __init__(self):  # ,scorefile
-        # self.afkcounter = 0
+    def __init__(self):
         self.contatore = 0
         self.games = {}
         self.win = False
         self.draw = False
         self.strings = strings_ita
-
-        # self.scoreFile = scorefile
 
     def checkidle(self, bot):
 
@@ -828,7 +810,7 @@ class ElAdBot:
                 bot.say(self.strings["idle_end"], trigger)
                 return
 
-            # winner = game.playerOrder[winner]
+
             game_duration = datetime.now() - game.startTime
             hours, remainder = divmod(game_duration.seconds, 3600)
             minutes, seconds = divmod(remainder, 60)
@@ -867,7 +849,7 @@ class ElAdBot:
                     stats = {"score": score, "win": win, "tot": tot, "win_rate": win_rate}
                     bot.db.set_plugin_value("Elemental_Adventure_Stats", playerlose, stats)
 
-                bot.say("[" + ELEMENTAL + "] : partita finita in WIN per " + winner + " in " + place, log_chan)
+                bot.say("[" + ELEMENTAL + "] : match ended in WIN for " + winner + " in " + place, log_chan)
 
             if self.draw:
                 bot.say("NO ONE WINS")
@@ -963,11 +945,11 @@ def rank(bot, trigger):
 
 @module.commands("adrank")
 @module.example(".rank")
-@module.require_admin()
 def adrank(bot, trigger):
-    bot.notice(str(bot.db.get_plugin_value("Elemental_Adventure_Stats", trigger.group(3),
+    if trigger.account in elad_admins:
+        bot.notice(str(bot.db.get_plugin_value("Elemental_Adventure_Stats", trigger.group(3),
                                            default={"score": 0, "win": 0, "tot": 0, "win_rate": 0})), trigger.nick)
-    bot.say("[" + ELEMENTAL + "] : " + trigger.nick + " requestes the RANK of " + trigger.group(3), log_chan)
+        bot.say("[" + ELEMENTAL + "] : " + trigger.nick + " requested the RANK of " + trigger.group(3), log_chan)
 
 
 @module.commands("elemental adventure", "elad", "ElAd")
@@ -977,7 +959,7 @@ def adrank(bot, trigger):
 def start(bot, trigger):
     if trigger.sender in game_chan:
         elad.start(bot, trigger)
-        bot.say("[" + ELEMENTAL + "] : START in " + trigger.sender + " da " + trigger.nick, log_chan)
+        bot.say("[" + ELEMENTAL + "] : START in " + trigger.sender + " by " + trigger.nick, log_chan)
 
 
 @module.commands("language", "lan")
@@ -993,7 +975,7 @@ def language(bot, trigger):
 def eladstop(bot, trigger):
     if trigger.sender in game_chan and trigger.account in elad_admins:
         elad.stop(bot, trigger)
-        bot.say("[" + ELEMENTAL + "] : Admin ha fermato una partita in  " + trigger.sender, log_chan)
+        bot.say("[" + ELEMENTAL + "] : Admin stopped a match in  " + trigger.sender, log_chan)
 
 
 @module.commands('jo', "join")
@@ -1038,9 +1020,8 @@ def unoplay(bot, trigger):
 
 
 @module.commands("teams", "tm")
-@module.require_admin("Only admins can see team reputation.")
 def teams(bot, trigger):
-    if trigger.sender in game_chan:
+    if trigger.sender in game_chan and trigger.account in elad_admins:
         elad.teams(bot, trigger)
 
 
@@ -1069,29 +1050,28 @@ def brishelp(bot, trigger):
 
 @module.commands('eladgames', "eladgm")
 @module.priority('high')
-@module.require_admin
 def eladgames(bot, trigger):
-    chans = []
-    active = 0
-    pending = 0
-    with lock:
-        for chan, game in elad.games.items():
-            if game.startTime:
-                chans.append(chan)
-                active += 1
-            else:
-                chans.append(chan + " (pending)")
-                pending += 1
-    if not len(chans):
-        bot.say('No ' + ELEMENTAL + ' games in progress, %s.' % trigger.nick)
-        return
-    g_active = "channel" if active == 1 else "channels"
-    g_pending = "channel" if pending == 1 else "channels"
-    chanlist = ", ".join(chans[:-2] + [" and ".join(chans[-2:])])
-    bot.reply(
-        ELEMENTAL + " is pending deal in %d %s and in progress in %d %s: %s. "
-        % (pending, g_pending, active, g_active, chanlist))
-
+    if trigger.account in elad_admins:
+        chans = []
+        active = 0
+        pending = 0
+        with lock:
+            for chan, game in elad.games.items():
+                if game.startTime:
+                    chans.append(chan)
+                    active += 1
+                else:
+                    chans.append(chan + " (pending)")
+                    pending += 1
+        if not len(chans):
+            bot.say('No ' + ELEMENTAL + ' games in progress, %s.' % trigger.nick)
+            return
+        g_active = "channel" if active == 1 else "channels"
+        g_pending = "channel" if pending == 1 else "channels"
+        chanlist = ", ".join(chans[:-2] + [" and ".join(chans[-2:])])
+        bot.reply(
+            ELEMENTAL + " is pending deal in %d %s and in progress in %d %s: %s. "
+            % (pending, g_pending, active, g_active, chanlist))
 
 @module.interval(1)
 def afktime(bot):
