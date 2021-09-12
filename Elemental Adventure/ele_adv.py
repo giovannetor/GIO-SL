@@ -76,7 +76,9 @@ min_player = 2
 max_player = 4
 
 lock = threading.RLock()
-
+"""
+These links will be replaced by Medial links. Request has already been sent.
+"""
 string_help_ita = "https://webchat.duckie.chat/uploads/c42504e4eb0c2815/paste.txt "
 
 string_help_eng = "https://webchat.duckie.chat/uploads/911a1a599b7ef006/paste.txt "
