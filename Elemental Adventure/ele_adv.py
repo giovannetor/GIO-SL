@@ -443,7 +443,6 @@ class ElAdGame:
             bot.notice(self.strings["bonus"] % (str(self._render_bonus(bonus))), trigger)
             bot.notice("=========================================", trigger)
 
-
     def inc_player(self, bot, trigger):  # actually send the next player to play
         with lock:
 
@@ -497,7 +496,8 @@ class ElAdGame:
                                 self.players[player_list]["cards"][card[
                                     "id"]] = card  # gives 3 cards to each player. Sets the card's id the same as the key
                             for card_id in self.players[player_list]["cards"]:
-                                self.players[player_list]["cards"][card_id]["owner"] = player_list # sets the card's owner
+                                self.players[player_list]["cards"][card_id][
+                                    "owner"] = player_list  # sets the card's owner
 
                     if self.lastturn and self.changecount == 0:
                         bot.say(strings["change_time"])
@@ -810,7 +810,6 @@ class ElAdBot:
                 bot.say(self.strings["idle_end"], trigger)
                 return
 
-
             game_duration = datetime.now() - game.startTime
             hours, remainder = divmod(game_duration.seconds, 3600)
             minutes, seconds = divmod(remainder, 60)
@@ -948,7 +947,7 @@ def rank(bot, trigger):
 def adrank(bot, trigger):
     if trigger.account in elad_admins:
         bot.notice(str(bot.db.get_plugin_value("Elemental_Adventure_Stats", trigger.group(3),
-                                           default={"score": 0, "win": 0, "tot": 0, "win_rate": 0})), trigger.nick)
+                                               default={"score": 0, "win": 0, "tot": 0, "win_rate": 0})), trigger.nick)
         bot.say("[" + ELEMENTAL + "] : " + trigger.nick + " requested the RANK of " + trigger.group(3), log_chan)
 
 
@@ -1072,6 +1071,7 @@ def eladgames(bot, trigger):
         bot.reply(
             ELEMENTAL + " is pending deal in %d %s and in progress in %d %s: %s. "
             % (pending, g_pending, active, g_active, chanlist))
+
 
 @module.interval(1)
 def afktime(bot):
