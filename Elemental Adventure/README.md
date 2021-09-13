@@ -5,7 +5,7 @@
 Sopel.dev8.0.0 module to play Elemental Adventure. 
 
 ##User Commands
-1. `.elemental adventure | .elad | `: Opens the lobby. Doesn't start the game.
+1. `.elemental adventure | .elad | ` Opens the lobby. Doesn't start the game.
 2. `.join      | .jo |` Joins the match.
 3. `.quit      | .qu | `Leave the match. ATTENTION! The enemy will win.
 4. `.deal      | .de |` Start the match.
@@ -21,7 +21,7 @@ Sopel.dev8.0.0 module to play Elemental Adventure.
 3. `.eladmove  |    |` Moves a match in another chan.
 4. `.adstop elad |  |` Forcefully stops a match.
 5. `.eladgames |.eladgm |` Shows in what chans a match is ongoing.
-═══════════════════════════════════════════════════════════════════════════════════════════════════════
+
 ##CARD EXAMPLE
 
         `[id] Element Hero |⚔ atk |✪ rep|`
