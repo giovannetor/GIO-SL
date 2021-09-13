@@ -4,7 +4,7 @@
 ##What is it?
 Sopel.dev8.0.0 module to play Elemental Adventure. 
 
-##User Commands
+## User Commands
 1. `.elemental adventure | .elad | ` Opens the lobby. Doesn't start the game.
 2. `.join      | .jo |` Joins the match.
 3. `.quit      | .qu | `Leave the match. ATTENTION! The enemy will win.
@@ -15,14 +15,14 @@ Sopel.dev8.0.0 module to play Elemental Adventure.
 8. `.language  |.lan |` Change the game's language (available english and italian)
 9. `.rank      |     |` Show your stats.
 
-##Admin Commands
+## Admin Commands
 1. `.adrank    |    |` Shows another player's stats.
 2. `.teams     |.tm |` Show each team's reputation.
 3. `.eladmove  |    |` Moves a match in another chan.
 4. `.adstop elad |  |` Forcefully stops a match.
 5. `.eladgames |.eladgm |` Shows in what chans a match is ongoing.
 
-##CARD EXAMPLE
+## CARD EXAMPLE
 
         `[id] Element Hero |⚔ atk |✪ rep|`
 
