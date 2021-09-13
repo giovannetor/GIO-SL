@@ -1,7 +1,7 @@
 ![alt text](https://github.com/giovannetor/Trinacry/blob/main/perlogo_small.png)
 
 # Elemental Adventure!
-##What is it?
+## What is it?
 Sopel.dev8.0.0 module to play Elemental Adventure. 
 
 ## User Commands
