@@ -4,6 +4,8 @@
 ## What is it?
 Sopel.dev8.0.0 module to play Elemental Adventure. 
 
+[RULES](https://webchat.duckie.chat/uploads/2ab66fbf957ab02d/paste.txt)
+
 ## User Commands
 1. `.elemental adventure | .elad | ` Opens the lobby. Doesn't start the game.
 2. `.join      | .jo |` Joins the match.
