@@ -18,7 +18,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import time
 from random import randint
-from sopel.plugin import commands , priority , thread
+from sopel.plugin import commands , priority , thread , event
 from sopel import config
 from sopel.formatting import colors, CONTROL_BOLD, CONTROL_COLOR, CONTROL_NORMAL
 
@@ -298,8 +298,8 @@ class PotatoBot:
 
 potato = PotatoBot()
 
-
-@commands("potato" , "pot")
+@thread(True)
+@commands("potato" , "pot" , "hot potato")
 def start(bot , trigger):
     if trigger.sender in game_chan:
         potato.start(bot , trigger)
@@ -360,4 +360,12 @@ def potgames(bot , trigger):
         bot.reply(f"{POTATO} is pending deal in {pending} {g_pending} and in progress in {active} {g_active}: {chanlist}.")
 
 
+@event("PART")
+def part(bot, trigger):
+    if trigger.sender in game_chan:
+        potato.quit(bot, trigger)
 
+@event("QUIT")
+def quit_(bot, trigger):
+    if trigger.sender in game_chan:
+        potato.quit(bot, trigger)

@@ -1,0 +1,24 @@
+ \\\  HELP PATATA BOLLENTE  ///
+====================================================================================
+--- COME SI GIOCA ---
+All'inizio della partita, un giocatore riceve la Patata, e il Timer del Bot parte.
+I giocatori devono passarsi la Patata a vicenda. Alla scadenza del timer, chi tiene
+la Patata in mano perde ed è eliminato.
+
+GIOCATORI MINIMI: 3
+GIOCATORI MASSIMI: INFINITO
+====================================================================================
+-- COMANDI UTENTE --
+1)  .potato = Apre la partita ai giocatori, ma non la inizia.
+2)  .join  = Entra nella partita.
+3)  .deal = Inizia la partita. Non potranno più unirsi nuovi giocatori.
+4)  .quit = Lascia la partita.
+5)  .give <nick> = Passa la Patata a <nick>. Esempio: ".give ciccio"
+6)  .help potato = Richiama questa pagina di aiuto.
+
+-- COMANDI ADMIN --
+1) .potgames = Mostra in quali canali vi è una Partita in corso.
+2) .adstop potato = Ferma forzatamente la partita in corso nel canale in cui viene scritto.
+
+====================================================================================
+NOTE: Mentre sei all'interno del Canale di gioco, NON potrai cambiare NICK.
