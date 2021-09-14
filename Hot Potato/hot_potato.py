@@ -60,7 +60,8 @@ POTATO = CONTROL_BOLD + CONTROL_COLOR + colors.ORANGE + "," + colors.BLACK + " P
 
 min_players = 3 # DO NOT set to less than 3
 
-help_ita = ""
+help_ita = "https://webchat.duckie.chat/uploads/c49b24461fbc0671/paste.txt "
+
 strings_ita = {"already_in" : "%s sei già all'interno della partita di" + POTATO,
                "already_started" : "Mi spiace %s, ma la partita di" + POTATO + "è già iniziata.",
                "not_enough" : "La partita di" + POTATO + "richiede un minimo di %d giocatori per iniziare.",
