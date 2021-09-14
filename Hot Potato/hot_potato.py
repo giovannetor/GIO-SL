@@ -29,7 +29,7 @@ from sopel.config.types import StaticSection, ListAttribute, ValidatedAttribute
 
 # Called when the module gets loaded
 def setup(bot):
-    bot.config.define_section("ElementalAdventure", HotPotatoConfigSection)
+    bot.config.define_section("HotPotato", HotPotatoConfigSection)
 
     # Set the allowed game channels
     global game_chan
