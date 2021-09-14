@@ -35,9 +35,9 @@ def setup(bot):
     global game_chan
     global log_chan
     global hotpot_admins
-    game_chan = bot.config.ElementalAdventure.gamechannels
-    log_chan = bot.config.ElementalAdventure.logchannels
-    hotpot_admins = bot.config.ElementalAdventure.elad_admins
+    game_chan = bot.config.HotPotato.gamechannels
+    log_chan = bot.config.HotPotato.logchannels
+    hotpot_admins = bot.config.HotPotato.elad_admins
 
 
 # Called when the module gets configured
