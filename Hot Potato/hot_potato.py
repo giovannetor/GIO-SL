@@ -99,8 +99,8 @@ strings_ita = {"already_in": "%s sei già all'interno della partita di" + POTATO
                "quit_ok": "Un giocatore ha lasciato la partita." + POTATO + "deve essere iniziata di nuovo.",
                "receiver_missing": "Non hai scritto a chi vuoi passare la" + POTATO,
                "joined": "%s si unisce alla partita!!",
-               "deal" : "Partita iniziata! %s has la" + POTATO,
-               "not_in_game" : "%s non fa parte della partita, non puoi passargliela!!"
+               "deal": "Partita iniziata! %s has la" + POTATO,
+               "not_in_game": "%s non fa parte della partita, non puoi passargliela!!"
                }
 
 
@@ -145,8 +145,6 @@ class PotatoGame:
 
         self.timer_function(bot, trigger, randint(10, 100))
 
-
-
     @thread(True)
     def timer_function(self, bot, chan, seconds: int):
         chan = self.chan
@@ -177,7 +175,7 @@ class PotatoGame:
         self.remove_player(bot, chan, kaboom_player)
         self.reset(bot, chan)
 
-    def give(self, bot, trigger , giver, receiver, emergency=False):
+    def give(self, bot,  giver, receiver, emergency=False):
 
         if not self.canpass:
             bot.notice(self.strings["cant_pass"], giver)
@@ -198,12 +196,11 @@ class PotatoGame:
             bot.say(self.strings["no_previous"] % giver)
             return
 
-
         self.players[receiver]["giver"] = giver
         if not emergency:
             self.players[giver]["giver"] = None
         self.has_potato = receiver
-        bot.say(self.strings["potato_received"][randint(0, len(self.strings["potato_received"])-1)] % receiver)
+        bot.say(self.strings["potato_received"][randint(0, len(self.strings["potato_received"]) - 1)] % receiver)
 
     def quit(self, bot, trigger):
         player = trigger.nick
@@ -213,7 +210,6 @@ class PotatoGame:
         chan = trigger.sender
 
         stat = self.players[player]["turns_alive"]
-
 
         self.remove_player(bot, chan, player)
         bot.say(self.strings["quit"] % trigger.nick)
@@ -243,10 +239,10 @@ class PotatoGame:
         self.timer_function(bot, chan, randint(10, 100))
 
     def remove_player(self, bot, chan, player):
+        stat = self.players[player]["turns_alive"]
+        potato.update_stats(bot, player, stat)
         self.players.pop(player)
         self.playerlist.remove(player)
-
-        potato.update_stats(bot, player, stat)
         bot.write(['MODE', chan, '-v', player])
 
 
@@ -319,7 +315,7 @@ class PotatoBot:
             bot.say(self.strings["receiver_missing"])
             return
 
-        self.games[trigger.sender].give(bot, trigger  , trigger.nick,  receiver)
+        self.games[trigger.sender].give(bot,  trigger.nick, receiver)
 
 
 potato = PotatoBot()
