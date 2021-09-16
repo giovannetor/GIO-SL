@@ -175,7 +175,7 @@ class PotatoGame:
         self.remove_player(bot, chan, kaboom_player)
         self.reset(bot, chan)
 
-    def give(self, bot,  giver, receiver, emergency=False):
+    def give(self, bot, giver, receiver, emergency=False):
 
         if not self.canpass:
             bot.notice(self.strings["cant_pass"], giver)
@@ -315,7 +315,7 @@ class PotatoBot:
             bot.say(self.strings["receiver_missing"])
             return
 
-        self.games[trigger.sender].give(bot,  trigger.nick, receiver)
+        self.games[trigger.sender].give(bot, trigger.nick, receiver)
 
 
 potato = PotatoBot()
