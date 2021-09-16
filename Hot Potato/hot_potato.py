@@ -23,8 +23,6 @@ from sopel import config
 from sopel.formatting import colors, CONTROL_BOLD, CONTROL_COLOR, CONTROL_NORMAL
 from sopel.plugin import commands, priority, thread, event
 
-settings = config.Config('/Users/giova/.sopel/default.cfg')  # replace with the config path
-
 from sopel.config.types import StaticSection, ListAttribute, ValidatedAttribute
 
 
@@ -62,7 +60,12 @@ POTATO = " " + CONTROL_BOLD + CONTROL_COLOR + colors.ORANGE + "," + colors.BLACK
 
 min_players = 3  # DO NOT set to less than 3
 
-help_ita = "https://webchat.duckie.chat/uploads/c49b24461fbc0671/paste.txt "
+help_ita = "https://webchat.duckie.chat/uploads/c49b24461fbc0671/paste.txt "  # Shortlink already requested to Media
+
+"""
+The game only has string in Italian.
+Strings can be translated by Teams willing to do so.
+"""
 
 strings_ita = {"already_in": "%s sei già all'interno della partita di" + POTATO,
                "already_started": "Mi spiace %s, ma la partita di" + POTATO + "è già iniziata.",
@@ -100,20 +103,32 @@ strings_ita = {"already_in": "%s sei già all'interno della partita di" + POTATO
                "receiver_missing": "Non hai scritto a chi vuoi passare la" + POTATO,
                "joined": "%s si unisce alla partita!!",
                "deal": "Partita iniziata! %s has la" + POTATO,
-               "not_in_game": "%s non fa parte della partita, non puoi passargliela!!"
+               "not_in_game": "%s non fa parte della partita. Passa la" + POTATO + "ai giocatori Voiced (+ davanti al nome).",
+               "time_interaction" : ["TIC TAC il tempo scorre.",
+                                     "Chi sarà il prossimo a essere eliminato?!",
+                                     "TEMPO SCADUTO... ahah scherzavo",
+                                     "TIC TAC",
+                                     "Ci siamo quasi...",
+                                     "Chissà quando scadrà il tempo",
+                                     "Uh oh, qualcuno sta per essere eliminato",
+                                     "Più veloci, il tempo scorre!",
+                                     "Manca poco! Più veloci!",
+                                     "Il tempo corre veloce..."]
+
                }
 
 
 class PotatoGame:
     def __init__(self, trigger):
-        self.players = {}
+        self.players = {} # Dict of players
         self.strings = strings_ita  # default strings are in italian
-        self.started = False
-        self.has_potato = None
-        self.playerlist = []
-        self.canpass = False
-        self.timecounter = 0
-        self.stop_game = False
+        self.started = False # Says if the game has started.
+        self.has_potato = None # Player holding the POTATO!!!
+        self.playerlist = [] # Iterable list
+        self.canpass = False # Says if it's a moment when players can pass or not.
+        self.timecounter = 0 # Used for logs.
+        self.stop_game = False # Used to stop the timer.
+        self.channel = None # Game chan, set in Deal
 
     def join(self, bot, trigger):
         if trigger.nick in self.players:
@@ -123,9 +138,9 @@ class PotatoGame:
             bot.notice(self.strings["already_started"] % trigger.nick, trigger.nick)
             return
         bot.say(self.strings["joined"] % trigger.nick)
-        self.players[trigger.nick] = {"turns_alive": 0, "giver": None}
+        self.players[trigger.nick] = {"turns_alive": 0, "giver": None} # Players get added to the match.
         self.playerlist.append(trigger.nick)
-        bot.write(['MODE', trigger.sender, '+v', trigger.nick])
+        bot.write(['MODE', trigger.sender, '+v', trigger.nick]) #Players are voiced
 
     def deal(self, bot, trigger):
         if len(self.players) < min_players:
@@ -137,33 +152,33 @@ class PotatoGame:
         if trigger.nick not in self.players:
             bot.say(self.strings["not_in"])
             return
-        self.has_potato = self.playerlist[randint(0, len(self.playerlist) - 1)]
+        self.has_potato = self.playerlist[randint(0, len(self.playerlist) - 1)] # The 1st player having the potato is random
         bot.say(self.strings["deal"] % self.has_potato)
         self.started = True
         self.canpass = True
         self.chan = trigger.sender
-
-        self.timer_function(bot, trigger, randint(10, 100))
+        self.timer_function(bot,  randint(10, 100)) # starts the timer.
 
     @thread(True)
-    def timer_function(self, bot, chan, seconds: int):
+    def timer_function(self, bot,  seconds: int):
         chan = self.chan
         def_seconds = seconds
         while seconds:
-            if self.stop_game:
+            if self.stop_game: # if the game is stopped, the timer stops.
                 break
             print(seconds)
             time.sleep(1)
             seconds -= 1
             self.timecounter += 1
-            if self.timecounter % 10 == 0:
+            if self.timecounter % 15 == 0: # every 15 seconds, notices to the log chan and sends a random sentence.
+                bot.say(self.strings["time_interaction"][randint(0 , len(self.strings["time_interaction"] - 1))] , chan)
                 bot.say(self.strings["time_counter"] % (self.timecounter, def_seconds, chan), log_chan)
 
-        if not self.stop_game:
+        if not self.stop_game: # same as above.
             self.explode_potato(bot, chan)
 
     def explode_potato(self, bot, chan):
-        self.canpass = False
+        self.canpass = False # temporarily players can't pass
         kaboom_player = self.has_potato
         bot.say(self.strings["stop_timer"])
         time.sleep(1)
@@ -172,8 +187,8 @@ class PotatoGame:
         bot.action(self.strings["kaboom_2"] % kaboom_player)
         time.sleep(1)
         bot.say(self.strings["kaboom"] % kaboom_player)
-        self.remove_player(bot, chan, kaboom_player)
-        self.reset(bot, chan)
+        self.remove_player(bot, chan, kaboom_player) # player holding the potato makes kaboom!
+        self.reset(bot, chan) # reset the turn.
 
     def give(self, bot, giver, receiver, emergency=False):
 
@@ -192,12 +207,12 @@ class PotatoGame:
         if giver != self.has_potato:
             bot.say(self.strings["not_have_potato"] % giver)
             return
-        if receiver == self.players[giver]["giver"]:
+        if receiver == self.players[giver]["giver"]: # suggested by Tony. To avoid ganging up against a player.
             bot.say(self.strings["no_previous"] % giver)
             return
 
         self.players[receiver]["giver"] = giver
-        if not emergency:
+        if not emergency: # emergency = player holding the potato quits
             self.players[giver]["giver"] = None
         self.has_potato = receiver
         bot.say(self.strings["potato_received"][randint(0, len(self.strings["potato_received"]) - 1)] % receiver)
@@ -208,8 +223,6 @@ class PotatoGame:
             bot.say(self.strings["cant_play"] % trigger.nick)
             return
         chan = trigger.sender
-
-        stat = self.players[player]["turns_alive"]
 
         self.remove_player(bot, chan, player)
         bot.say(self.strings["quit"] % trigger.nick)
@@ -224,7 +237,7 @@ class PotatoGame:
             self.players[player]["turns_alive"] += 1
             self.players[player]["giver"] = None
 
-        if len(self.players) == 2:
+        if len(self.players) == 2: # the game ends when there are 2 players left
             plwin1, plwin2 = self.playerlist[0], self.playerlist[1]
             stats = self.players[plwin1]["turns_alive"]
             bot.say(self.strings["congrats_win"] % (plwin1, plwin2, stats))
@@ -236,10 +249,10 @@ class PotatoGame:
         self.timecounter = 0
         self.has_potato = self.playerlist[randint(0, len(self.playerlist))]
         bot.say(self.strings["potato_given"] % self.has_potato)
-        self.timer_function(bot, chan, randint(10, 100))
+        self.timer_function(bot, randint(10, 100))
 
     def remove_player(self, bot, chan, player):
-        stat = self.players[player]["turns_alive"]
+        stat = self.players[player]["turns_alive"] # removed players get their stats updated
         potato.update_stats(bot, player, stat)
         self.players.pop(player)
         self.playerlist.remove(player)
@@ -257,21 +270,21 @@ class PotatoBot:
         else:
             self.games[trigger.sender] = PotatoGame(trigger)
             bot.say(self.strings["game_started"])
-            bot.say(f"{POTATO} : match STARTED in {trigger.sender} by {trigger.nick}", log_chan)
+            bot.say(f"{POTATO} : match STARTED in {trigger.sender} by {trigger.nick}", log_chan) # happy? f strings \(^^)/
             self.join(bot, trigger)
-            bot.write(['MODE', trigger.sender, '+N'])
+            bot.write(['MODE', trigger.sender, '+N']) # While playing, nicks cannot be changed.
 
     def join(self, bot, trigger):
         if trigger.sender in self.games:
             self.games[trigger.sender].join(bot, trigger)
-        else:
-            return
+
 
     def stop(self, bot, channel, forced=False):
         if channel not in self.games:
             bot.notice(self.strings["not_started"])
             return
         game = self.games[channel]
+        game.stop_game = True
         if forced:
             bot.say(self.strings["admin_stop"])
             bot.say(f"{POTATO} : match forcefully STOPPED in {channel}", log_chan)
@@ -283,7 +296,7 @@ class PotatoBot:
             stat = game.players[player]["turns_alive"]
             self.update_stats(bot, player, stat)
 
-        game.stop_game = True
+
         bot.write(['MODE', channel, '-N'])
         del self.games[channel]
 
@@ -389,12 +402,22 @@ def potgames(bot, trigger):
             f"{POTATO} is pending deal in {pending} {g_pending} and in progress in {active} {g_active}: {chanlist}.")
 
 
-@commands("rank")
-def rank(bot, trigger):
+@commands("potatostats" , "ps")
+def stats(bot, trigger):
     stats = bot.db.get_nick_value("hot_potato", trigger.nick, default=0)
-    bot.notice(POTATO + "STATS: " + stats, trigger.nick)
-    bot.say(f"{POTATO}: {trigger.nick} requested their RANK.", log_chan)
+    bot.notice(POTATO + "STATS: Turns Alive: " + stats, trigger.nick)
+    bot.say(f"{POTATO}: {trigger.nick} requested their STATS.", log_chan)
 
+@commands("adpotatostats" , "adps")
+def admin_stats(bot, trigger):
+    if  trigger.account in hotpot_admins:
+        try:
+            stats = bot.db.get_nick_value("hot_potato", trigger.group(3), default=0)
+        except:
+            bot.reply("Specify a nick to search.")
+            return
+        bot.notice(f"{POTATO} STATS of {trigger.group(3)}: Turns Alive: {stats}", trigger.nick)
+        bot.say(f"{POTATO}: {trigger.nick} requested the STATS of {trigger.group(3)}.", log_chan)
 
 @event("PART")
 def part(bot, trigger):
