@@ -15,11 +15,13 @@ MAXIMUM PLAYERS: INFINITE
 4) .quit = Leave the game.
 5) .give <nick> = Pass the Potato to <nick>. Example: ".give ciccio"
 6) .help potato = Call this help page.
-7) .potatostats = Get your STATS
+7) .potatostats | .ps = Get your STATS
 
 - ADMIN COMMANDS -
-1) .potgames = Shows which channels there is a game in progress.
+1) .potgames | .pg = Shows which channels there is a game in progress.
 2) .adstop potato = Forcibly stop the game in progress in the channel in which it is written.
-3) .adpotatostats = Get another user's STATS.
+3) .adpotatostats | .adps = Get another user's STATS.
 ===================================================================================
 NOTES: While you are in the Game Channel, you will NOT be able to change NICKs.
+NOTES: To allow a friendlier game environment, you cannot pass back the Potato to the one who passed you in the first place.
+NOTES: After a TOT number of turns (N° players + 3) the game will start asking to pass the Potato to inactive players.

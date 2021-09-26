@@ -15,11 +15,13 @@ GIOCATORI MASSIMI: INFINITO
 4)  .quit = Lascia la partita.
 5)  .give <nick> = Passa la Patata a <nick>. Esempio: ".give ciccio"
 6)  .help potato = Richiama questa pagina di aiuto.
-7)  .potatostats = Richiama le tue STATS
+7)  .potatostats | .ps = Richiama le tue STATS
 
 -- COMANDI ADMIN --
-1) .potgames = Mostra in quali canali vi è una Partita in corso.
+1) .potgames | .pg = Mostra in quali canali vi è una Partita in corso.
 2) .adstop potato = Ferma forzatamente la partita in corso nel canale in cui viene scritto.
-3) .adpotatostats = Richiama le STATS di un altro utente.
+3) .adpotatostats | .adps = Richiama le STATS di un altro utente.
 ====================================================================================
 NOTE: Mentre sei all'interno del Canale di gioco, NON potrai cambiare NICK.
+NOTE: Per favorire un ambiente di gioco più amichevole, non puoi passare la patata a chi te l'ha data.
+NOTE: Dopo un TOT numero di turno (N° giocatori + 3) il gioco inizierà a suggerire di passarla ai giocatori meno attivi.

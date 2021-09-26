@@ -111,7 +111,9 @@ strings_ita = {"already_in": "%s sei già all'interno della partita di" + POTATO
                                     "Uh oh, qualcuno sta per essere eliminato",
                                     "Più veloci, il tempo scorre!",
                                     "Manca poco! Più veloci!",
-                                    "Il tempo corre veloce..."]
+                                    "Il tempo corre veloce...",
+                                    "Dai su, facciamola girare questa Patata"],
+               "turns_no": "I seguenti giocatori non ricevono la" + POTATO + "da un po'. Provate a includerli nel gioco: " + CONTROL_BOLD + "%s."
 
                }
 
@@ -127,6 +129,7 @@ class PotatoGame:
         self.timecounter = 0  # Used for logs.
         self.stop_game = False  # Used to stop the timer.
         self.channel = None  # Game chan, set in Deal
+        self.max_turn_no = 0  # max of turns a player can not receive a potato before repeating a warn
 
     def join(self, bot, trigger):
         if trigger.nick in self.players:
@@ -136,7 +139,7 @@ class PotatoGame:
             bot.notice(self.strings["already_started"] % trigger.nick, trigger.nick)
             return
         bot.say(self.strings["joined"] % trigger.nick)
-        self.players[trigger.nick] = {"turns_alive": 0, "giver": None}  # Players get added to the match.
+        self.players[trigger.nick] = {"turns_alive": 0, "giver": None, "turns_no": 0}  # Players get added to the match.
         self.playerlist.append(trigger.nick)
         bot.write(['MODE', trigger.sender, '+v', trigger.nick])  # Players are voiced
 
@@ -157,6 +160,7 @@ class PotatoGame:
         self.canpass = True
         self.chan = trigger.sender
         self.timer_function(bot, randint(10, 100))  # starts the timer.
+        self.max_turn_no += len(self.players) + 3  # we add +3 to give players a bit more gameplay freedom
 
     @thread(True)
     def timer_function(self, bot, seconds: int):
@@ -214,7 +218,26 @@ class PotatoGame:
         if not emergency:  # emergency = player holding the potato quits
             self.players[giver]["giver"] = None
         self.has_potato = receiver
+        self.players[receiver]["turn_no"] = 0  # resets the not played turns of a player
         bot.say(self.strings["potato_received"][randint(0, len(self.strings["potato_received"]) - 1)] % receiver)
+
+        for player in self.players:
+            if player != receiver:
+                self.players[player]["turn_no"] += 1
+
+        self.check_turn_no(bot)
+
+    def check_turn_no(self, bot):
+        turn_no_list = ""
+        for player in self.players:
+            if self.players[player]["turn_no"] == self.max_turn_no:
+                turn_no_list += f"{player} ({self.players[player]['turn_no']}), "
+
+        if not turn_no_list:  # if all the players are behaving nicely
+            return
+
+        turn_no_list.rstrip(", ")  # we like nice format
+        bot.say(self.strings["turns_no"] % str(turn_no_list))
 
     def quit(self, bot, trigger):
         player = trigger.nick
@@ -302,7 +325,7 @@ class PotatoBot:
         stats = bot.db.get_nick_value("hot_potato", player, default=0)
         stats += stat
         bot.db.set_nick_value("hot_potato", player, stat)
-        bot.say(f"{POTATO} : stats of {player} updated succesfully.", log_chan)
+        bot.say(f"{POTATO} : stats of {player} updated successfully.", log_chan)
 
     def quit(self, bot, trigger):
         if trigger.sender in self.games:
@@ -372,12 +395,12 @@ def give(bot, trigger):
 
 @commands("help")
 def help(bot, trigger):
-    if trigger.group(3).lower() == "potato":
+    if trigger.group(2).lower() in ["potato", "hot_potato", "hot potato", "hotpot"]:
         if trigger.sender in game_chan:
-            bot.notice(f"GUIDA: {help_ita}")
+            bot.notice(f"GUIDA: {help_ita}")  # just swap with the right dict when translating.
 
 
-@commands("potgames")
+@commands("potgames", "pg")
 def potgames(bot, trigger):
     if trigger.account in hotpot_admins and trigger.sender == log_chan:
         chans = []
