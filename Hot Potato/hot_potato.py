@@ -23,23 +23,32 @@ from sopel.config.types import StaticSection, ListAttribute, ValidatedAttribute
 from sopel.formatting import colors, CONTROL_BOLD, CONTROL_COLOR, CONTROL_NORMAL
 from sopel.plugin import commands, priority, thread, event
 
+LANGUAGE = None
+GAME_CHAN = []
+LOG_CHAN = None
+HOTPOT_ADMINS = []
+
 
 # Called when the module gets loaded
 def setup(bot):
     bot.config.define_section("HotPotato", HotPotatoConfigSection)
 
     # Set the allowed game channels
-    global game_chan
-    global log_chan
-    global hotpot_admins
-    game_chan = bot.config.HotPotato.gamechannels
-    log_chan = bot.config.HotPotato.logchannels
-    hotpot_admins = bot.config.HotPotato.hotpot_admins
+    global LANGUAGE
+    global GAME_CHAN
+    global LOG_CHAN
+    global HOTPOT_ADMINS
+    LANGUAGE = bot.config.HotPotato.language
+    GAME_CHAN = bot.config.HotPotato.gamechannels
+    LOG_CHAN = bot.config.HotPotato.logchannels
+    HOTPOT_ADMINS = bot.config.HotPotato.hotpot_admins
 
 
 # Called when the module gets configured
 def configure(config):
     config.define_section("HotPotato", HotPotatoConfigSection)
+    config.HotPotato.configure_setting("language",
+                                       "What language do you want to use in the game?")
     config.HotPotato.configure_setting("gamechannels",
                                        "In what channels is Hot Potato allowed to be played? (One per line)")
     config.HotPotato.configure_setting("logchannels",
@@ -49,12 +58,17 @@ def configure(config):
 
 # Class with the settings for Elemental Adventure
 class HotPotatoConfigSection(StaticSection):
+    language = ValidatedAttribute("language")
     gamechannels = ListAttribute("gamechannels")
     logchannels = ValidatedAttribute("logchannels")
     hotpot_admins = ListAttribute("hotpot_admins")
 
 
-POTATO = " " + CONTROL_BOLD + CONTROL_COLOR + colors.ORANGE + "," + colors.BLACK + " PATATA BOLLENTE " + CONTROL_NORMAL + " "
+potato_name = {"italiano": " PATATA BOLLENTE ",
+               "english" : "HOT POTATO"
+               }
+
+POTATO = " " + CONTROL_BOLD + CONTROL_COLOR + colors.ORANGE + "," + colors.BLACK + potato_name[LANGUAGE]  + CONTROL_NORMAL + " "
 
 min_players = 3  # DO NOT set to less than 3
 
@@ -65,7 +79,12 @@ The game only has string in Italian.
 Strings can be translated by Teams willing to do so.
 """
 
-strings_ita = {"already_in": "%s sei già all'interno della partita di" + POTATO,
+# DO NOT translate the keys (what's before the ":"). ONLY translate the values (what's after the ":").
+# DO NOT translate the "POTATO" value.
+# DO NOT translate the CONTROL_BOLD, CONTROL_COLOR and colors values.
+
+strings = {"italiano":
+               {"already_in": "%s sei già all'interno della partita di" + POTATO,
                "already_started": "Mi spiace %s, ma la partita di" + POTATO + "è già iniziata.",
                "not_enough": "La partita di" + POTATO + "richiede un minimo di %d giocatori per iniziare.",
                "not_in": "%s non sei all'interno della partita di" + POTATO + ". Usa .join per unirti!",
@@ -116,12 +135,13 @@ strings_ita = {"already_in": "%s sei già all'interno della partita di" + POTATO
                "turns_no": "I seguenti giocatori non ricevono la" + POTATO + "da un po'. Provate a includerli nel gioco: " + CONTROL_BOLD + "%s."
 
                }
+           }
 
 
 class PotatoGame:
     def __init__(self, trigger):
         self.players = {}  # Dict of players
-        self.strings = strings_ita  # default strings are in italian
+        self.strings = strings[LANGUAGE]  # default strings are in italian
         self.started = False  # Says if the game has started.
         self.has_potato = None  # Player holding the POTATO!!!
         self.playerlist = []  # Iterable list
@@ -139,7 +159,7 @@ class PotatoGame:
             bot.notice(self.strings["already_started"] % trigger.nick, trigger.nick)
             return
         bot.say(self.strings["joined"] % trigger.nick)
-        self.players[trigger.nick] = {"turns_alive": 0, "giver": None, "turns_no": 0}  # Players get added to the match.
+        self.players[trigger.nick] = {"turns_alive": 0, "giver": None, "turn_no": 0}  # Players get added to the match.
         self.playerlist.append(trigger.nick)
         bot.write(['MODE', trigger.sender, '+v', trigger.nick])  # Players are voiced
 
@@ -175,7 +195,7 @@ class PotatoGame:
             self.timecounter += 1
             if self.timecounter % 15 == 0:  # every 15 seconds, notices to the log chan and sends a random sentence.
                 bot.say(self.strings["time_interaction"][randint(0, len(self.strings["time_interaction"] - 1))], chan)
-                bot.say(self.strings["time_counter"] % (self.timecounter, def_seconds, chan), log_chan)
+                bot.say(self.strings["time_counter"] % (self.timecounter, def_seconds, chan), LOG_CHAN)
 
         if not self.stop_game:  # same as above.
             self.explode_potato(bot, chan)
@@ -284,7 +304,7 @@ class PotatoGame:
 class PotatoBot:
     def __init__(self):
         self.games = {}
-        self.strings = strings_ita
+        self.strings = strings[LANGUAGE]
 
     def start(self, bot, trigger):
         if trigger.sender in self.games:
@@ -293,7 +313,7 @@ class PotatoBot:
             self.games[trigger.sender] = PotatoGame(trigger)
             bot.say(self.strings["game_started"])
             bot.say(f"{POTATO} : match STARTED in {trigger.sender} by {trigger.nick}",
-                    log_chan)  # happy? f strings \(^^)/
+                    LOG_CHAN)  # happy? f strings \(^^)/
             self.join(bot, trigger)
             bot.write(['MODE', trigger.sender, '+N'])  # While playing, nicks cannot be changed.
 
@@ -309,7 +329,7 @@ class PotatoBot:
         game.stop_game = True
         if forced:
             bot.say(self.strings["admin_stop"])
-            bot.say(f"{POTATO} : match forcefully STOPPED in {channel}", log_chan)
+            bot.say(f"{POTATO} : match forcefully STOPPED in {channel}", LOG_CHAN)
         elif not game.started:
             bot.say(self.strings["quit_ok"])
 
@@ -325,7 +345,7 @@ class PotatoBot:
         stats = bot.db.get_nick_value("hot_potato", player, default=0)
         stats += stat
         bot.db.set_nick_value("hot_potato", player, stat)
-        bot.say(f"{POTATO} : stats of {player} updated successfully.", log_chan)
+        bot.say(f"{POTATO} : stats of {player} updated successfully.", LOG_CHAN)
 
     def quit(self, bot, trigger):
         if trigger.sender in self.games:
@@ -358,51 +378,51 @@ potato = PotatoBot()
 @thread(True)
 @commands("potato", "pot", "hot potato")
 def start(bot, trigger):
-    if trigger.sender in game_chan:
+    if trigger.sender in GAME_CHAN:
         potato.start(bot, trigger)
 
 
 @commands("adstop potato")
 @priority("high")
 def stop(bot, trigger):
-    if trigger.sender in game_chan and trigger.account in hotpot_admins:
+    if trigger.sender in GAME_CHAN and trigger.account in HOTPOT_ADMINS:
         potato.stop(bot, trigger.sender, forced=True)
 
 
 @commands("join", "jo")
 def join(bot, trigger):
-    if trigger.sender in game_chan:
+    if trigger.sender in GAME_CHAN:
         potato.join(bot, trigger)
 
 
 @commands("quit", "qu")
 def quit(bot, trigger):
-    if trigger.sender in game_chan:
+    if trigger.sender in GAME_CHAN:
         potato.quit(bot, trigger)
 
 
 @commands('deal', "de")
 def deal(bot, trigger):
-    if trigger.sender in game_chan:
+    if trigger.sender in GAME_CHAN:
         potato.deal(bot, trigger)
 
 
 @commands("give", "pass", "pa", "gi")
 def give(bot, trigger):
-    if trigger.sender in game_chan:
+    if trigger.sender in GAME_CHAN:
         potato.give(bot, trigger)
 
 
 @commands("help")
 def help(bot, trigger):
     if trigger.group(2).lower() in ["potato", "hot_potato", "hot potato", "hotpot"]:
-        if trigger.sender in game_chan:
+        if trigger.sender in GAME_CHAN:
             bot.notice(f"GUIDA: {help_ita}")  # just swap with the right dict when translating.
 
 
 @commands("potgames", "pg")
 def potgames(bot, trigger):
-    if trigger.account in hotpot_admins and trigger.sender == log_chan:
+    if trigger.account in HOTPOT_ADMINS and trigger.sender == LOG_CHAN:
         chans = []
         active = 0
         pending = 0
@@ -427,28 +447,28 @@ def potgames(bot, trigger):
 def stats(bot, trigger):
     stats = bot.db.get_nick_value("hot_potato", trigger.nick, default=0)
     bot.notice(POTATO + "STATS: Turns Alive: " + stats, trigger.nick)
-    bot.say(f"{POTATO}: {trigger.nick} requested their STATS.", log_chan)
+    bot.say(f"{POTATO}: {trigger.nick} requested their STATS.", LOG_CHAN)
 
 
 @commands("adpotatostats", "adps")
 def admin_stats(bot, trigger):
-    if trigger.account in hotpot_admins:
+    if trigger.account in HOTPOT_ADMINS:
         try:
             stats = bot.db.get_nick_value("hot_potato", trigger.group(3), default=0)
         except:
             bot.reply("Specify a nick to search.")
             return
         bot.notice(f"{POTATO} STATS of {trigger.group(3)}: Turns Alive: {stats}", trigger.nick)
-        bot.say(f"{POTATO}: {trigger.nick} requested the STATS of {trigger.group(3)}.", log_chan)
+        bot.say(f"{POTATO}: {trigger.nick} requested the STATS of {trigger.group(3)}.", LOG_CHAN)
 
 
 @event("PART")
 def part(bot, trigger):
-    if trigger.sender in game_chan:
+    if trigger.sender in GAME_CHAN:
         potato.quit(bot, trigger)
 
 
 @event("QUIT")
 def quit_(bot, trigger):
-    if trigger.sender in game_chan:
+    if trigger.sender in GAME_CHAN:
         potato.quit(bot, trigger)
