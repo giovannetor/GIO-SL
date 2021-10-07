@@ -68,12 +68,14 @@ potato_name = {"italiano": " PATATA BOLLENTE ",
                "english": "HOT POTATO"
                }
 
-POTATO = " " + CONTROL_BOLD + CONTROL_COLOR + colors.ORANGE + "," + colors.BLACK + potato_name[
+POTATO = " " + CONTROL_BOLD + CONTROL_COLOR + colors.ORANGE + "," + colors.BLACK + potato_name.get[
     LANGUAGE] + CONTROL_NORMAL + " "
 
 min_players = 3  # DO NOT set to less than 3
 
-help_ita = "https://webchat.duckie.chat/uploads/c49b24461fbc0671/paste.txt "  # Shortlink already requested to Media
+help = {"italiano": "https://webchat.duckie.chat/uploads/c49b24461fbc0671/paste.txt ",  # Shortlink already requested to Media
+        "english" : ""
+        }
 
 """
 The game only has string in Italian.
@@ -134,6 +136,9 @@ strings = {"italiano":
                                      "Il tempo corre veloce...",
                                      "Dai su, facciamola girare questa Patata"],
                 "turns_no": "I seguenti giocatori non ricevono la" + POTATO + "da un po'. Provate a includerli nel gioco: " + CONTROL_BOLD + "%s."
+
+                },
+           "english" : {
 
                 }
            }
@@ -418,7 +423,7 @@ def give(bot, trigger):
 def help(bot, trigger):
     if trigger.group(2).lower() in ["potato", "hot_potato", "hot potato", "hotpot"]:
         if trigger.sender in GAME_CHAN:
-            bot.notice(f"GUIDA: {help_ita}")  # just swap with the right dict when translating.
+            bot.notice(f"GUIDA: {help[LANGUAGE]}")  # just swap with the right dict when translating.
 
 
 @commands("potgames", "pg")
