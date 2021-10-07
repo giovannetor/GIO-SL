@@ -65,10 +65,11 @@ class HotPotatoConfigSection(StaticSection):
 
 
 potato_name = {"italiano": " PATATA BOLLENTE ",
-               "english" : "HOT POTATO"
+               "english": "HOT POTATO"
                }
 
-POTATO = " " + CONTROL_BOLD + CONTROL_COLOR + colors.ORANGE + "," + colors.BLACK + potato_name[LANGUAGE]  + CONTROL_NORMAL + " "
+POTATO = " " + CONTROL_BOLD + CONTROL_COLOR + colors.ORANGE + "," + colors.BLACK + potato_name[
+    LANGUAGE] + CONTROL_NORMAL + " "
 
 min_players = 3  # DO NOT set to less than 3
 
@@ -85,56 +86,56 @@ Strings can be translated by Teams willing to do so.
 
 strings = {"italiano":
                {"already_in": "%s sei già all'interno della partita di" + POTATO,
-               "already_started": "Mi spiace %s, ma la partita di" + POTATO + "è già iniziata.",
-               "not_enough": "La partita di" + POTATO + "richiede un minimo di %d giocatori per iniziare.",
-               "not_in": "%s non sei all'interno della partita di" + POTATO + ". Usa .join per unirti!",
-               "time_counter": POTATO + "| Sono passati %d secondi su %d in %s .",
-               "stop_timer": CONTROL_BOLD + CONTROL_COLOR + colors.RED + "STOP AL TEMPO!!! ",
-               "kaboom_1": "Qualcuno ha una" + POTATO + "per le mani!",
-               "kaboom_2": "si gira a guardare %s.",
-               "kaboom": "KABOOM! %s è stato eliminato dal gioco.",
-               "cant_pass": "Pssst il tempo si è fermato, se hai tu la patata... beh mi spiace!",
-               "cant_play": "%s per favore non disturbare la partita degli altri giocatori. Puoi unirti alla prossima!",
-               "not_have_potato": "%s non hai la" + POTATO + ". Fortunello!",
-               "no_previous": "Mi spiace %s ma non si può passare la" + POTATO + "al giocatore che te l'ha appena data. TIC TAC!",
-               "potato_received": ["%s ha ricevuto la" + POTATO,
-                                   "%s adesso hai tu la" + POTATO + ". OUCH SCOTTA!",
-                                   "%s presto! La" + POTATO + "scotta!!",
-                                   "La" + POTATO + "ha scelto %s come suo nuovo proprietario.",
-                                   "%s prende la" + POTATO + "al volo. Ottima presa!",
-                                   "%s hai la" + POTATO + ". Il tempo scorre PRESTO!!",
-                                   "%s usa .give <nick> per dare la patata a qualcun altro. TIC TAC!",
-                                   "%s sbrigati a passare la" + POTATO + ". Non mi pagano abbastanza per fare anche l'infermiere XD",
-                                   "%s ha avuto in dono la" + POTATO,
-                                   "%s ha la" + POTATO + "adesso!"],
-               "quit": "%s ha deciso di lasciare la partita.",
-               "emergency_give": "Oh no, %s aveva la" + POTATO + "! Lancio di emergenza a %s!",
-               "congrats_win": "Complimenti %s e %s, siete i due sopravvissuti! Avete vinto la partita"
-                               " di" + POTATO + " sopravvivendo a ben %d turni!!!!",
-               "new_turn": "Inizia il prossimo turnoooo",
-               "potato_given": "%s inizia con la" + POTATO + ". Presto passala a qualcuno!",
-               "game_started": "Una partita di" + POTATO + "è iniziata. Usa .join per unirti!",
-               "not_started": "La partita di" + POTATO + "non è ancora iniziata.",
-               "admin_stop": "Un ADMIN ha fermato la partita di" + POTATO,
-               "quit_ok": "Un giocatore ha lasciato la partita." + POTATO + "deve essere iniziata di nuovo.",
-               "receiver_missing": "Non hai scritto a chi vuoi passare la" + POTATO,
-               "joined": "%s si unisce alla partita!!",
-               "deal": "Partita iniziata! %s has la" + POTATO,
-               "not_in_game": "%s non fa parte della partita. Passa la" + POTATO + "ai giocatori Voiced (+ davanti al nome).",
-               "time_interaction": ["TIC TAC il tempo scorre.",
-                                    "Chi sarà il prossimo a essere eliminato?!",
-                                    "TEMPO SCADUTO... ahah scherzavo",
-                                    "TIC TAC",
-                                    "Ci siamo quasi...",
-                                    "Chissà quando scadrà il tempo",
-                                    "Uh oh, qualcuno sta per essere eliminato",
-                                    "Più veloci, il tempo scorre!",
-                                    "Manca poco! Più veloci!",
-                                    "Il tempo corre veloce...",
-                                    "Dai su, facciamola girare questa Patata"],
-               "turns_no": "I seguenti giocatori non ricevono la" + POTATO + "da un po'. Provate a includerli nel gioco: " + CONTROL_BOLD + "%s."
+                "already_started": "Mi spiace %s, ma la partita di" + POTATO + "è già iniziata.",
+                "not_enough": "La partita di" + POTATO + "richiede un minimo di %d giocatori per iniziare.",
+                "not_in": "%s non sei all'interno della partita di" + POTATO + ". Usa .join per unirti!",
+                "time_counter": POTATO + "| Sono passati %d secondi su %d in %s .",
+                "stop_timer": CONTROL_BOLD + CONTROL_COLOR + colors.RED + "STOP AL TEMPO!!! ",
+                "kaboom_1": "Qualcuno ha una" + POTATO + "per le mani!",
+                "kaboom_2": "si gira a guardare %s.",
+                "kaboom": "KABOOM! %s è stato eliminato dal gioco.",
+                "cant_pass": "Pssst il tempo si è fermato, se hai tu la patata... beh mi spiace!",
+                "cant_play": "%s per favore non disturbare la partita degli altri giocatori. Puoi unirti alla prossima!",
+                "not_have_potato": "%s non hai la" + POTATO + ". Fortunello!",
+                "no_previous": "Mi spiace %s ma non si può passare la" + POTATO + "al giocatore che te l'ha appena data. TIC TAC!",
+                "potato_received": ["%s ha ricevuto la" + POTATO,
+                                    "%s adesso hai tu la" + POTATO + ". OUCH SCOTTA!",
+                                    "%s presto! La" + POTATO + "scotta!!",
+                                    "La" + POTATO + "ha scelto %s come suo nuovo proprietario.",
+                                    "%s prende la" + POTATO + "al volo. Ottima presa!",
+                                    "%s hai la" + POTATO + ". Il tempo scorre PRESTO!!",
+                                    "%s usa .give <nick> per dare la patata a qualcun altro. TIC TAC!",
+                                    "%s sbrigati a passare la" + POTATO + ". Non mi pagano abbastanza per fare anche l'infermiere XD",
+                                    "%s ha avuto in dono la" + POTATO,
+                                    "%s ha la" + POTATO + "adesso!"],
+                "quit": "%s ha deciso di lasciare la partita.",
+                "emergency_give": "Oh no, %s aveva la" + POTATO + "! Lancio di emergenza a %s!",
+                "congrats_win": "Complimenti %s e %s, siete i due sopravvissuti! Avete vinto la partita"
+                                " di" + POTATO + " sopravvivendo a ben %d turni!!!!",
+                "new_turn": "Inizia il prossimo turnoooo",
+                "potato_given": "%s inizia con la" + POTATO + ". Presto passala a qualcuno!",
+                "game_started": "Una partita di" + POTATO + "è iniziata. Usa .join per unirti!",
+                "not_started": "La partita di" + POTATO + "non è ancora iniziata.",
+                "admin_stop": "Un ADMIN ha fermato la partita di" + POTATO,
+                "quit_ok": "Un giocatore ha lasciato la partita." + POTATO + "deve essere iniziata di nuovo.",
+                "receiver_missing": "Non hai scritto a chi vuoi passare la" + POTATO,
+                "joined": "%s si unisce alla partita!!",
+                "deal": "Partita iniziata! %s has la" + POTATO,
+                "not_in_game": "%s non fa parte della partita. Passa la" + POTATO + "ai giocatori Voiced (+ davanti al nome).",
+                "time_interaction": ["TIC TAC il tempo scorre.",
+                                     "Chi sarà il prossimo a essere eliminato?!",
+                                     "TEMPO SCADUTO... ahah scherzavo",
+                                     "TIC TAC",
+                                     "Ci siamo quasi...",
+                                     "Chissà quando scadrà il tempo",
+                                     "Uh oh, qualcuno sta per essere eliminato",
+                                     "Più veloci, il tempo scorre!",
+                                     "Manca poco! Più veloci!",
+                                     "Il tempo corre veloce...",
+                                     "Dai su, facciamola girare questa Patata"],
+                "turns_no": "I seguenti giocatori non ricevono la" + POTATO + "da un po'. Provate a includerli nel gioco: " + CONTROL_BOLD + "%s."
 
-               }
+                }
            }
 
 
