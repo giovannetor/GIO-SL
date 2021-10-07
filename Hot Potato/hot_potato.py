@@ -68,7 +68,7 @@ potato_name = {"italiano": " PATATA BOLLENTE ",
                "english": "HOT POTATO"
                }
 
-POTATO = " " + CONTROL_BOLD + CONTROL_COLOR + colors.ORANGE + "," + colors.BLACK + potato_name.get[
+POTATO = " " + CONTROL_BOLD + CONTROL_COLOR + colors.ORANGE + "," + colors.BLACK + potato_name[
     LANGUAGE] + CONTROL_NORMAL + " "
 
 min_players = 3  # DO NOT set to less than 3
