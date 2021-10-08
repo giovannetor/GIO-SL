@@ -15,6 +15,7 @@ the Potato in hand loses and is eliminated.
 5) `.give <nick>` = Pass the Potato to <nick>. Example: ".give ciccio"
 6) `.help potato` = Call the help page (might differ from the README file).
 7) `.potatostats` = Get your STATS
+8) `.who` = Shows who's in game and who's holding the potato.
 
 ### ADMIN COMMANDS 
 1) `.potgames `= Shows which channels there is a game in progress.
