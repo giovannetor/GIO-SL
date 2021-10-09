@@ -10,12 +10,13 @@ MAXIMUM PLAYERS: INFINITE
 ===================================================================================
 - USER COMMANDS -
 1) .potato = Opens the game to players, but does not start it.
-2) .join = Join the game.
-3) .deal = Start the game. New players will no longer be able to join.
+2) .join | .jo = Join the game.
+3) .deal | .de = Start the game. New players will no longer be able to join.
 4) .quit = Leave the game.
-5) .give <nick> = Pass the Potato to <nick>. Example: ".give ciccio"
+5) .give | .pass <nick> = Pass the Potato to <nick>. Example: ".give ciccio"
 6) .help potato = Call this help page.
 7) .potatostats | .ps = Get your STATS
+8) .who = Shows who's left in game, and who's holding the Potato.
 
 - ADMIN COMMANDS -
 1) .potgames | .pg = Shows which channels there is a game in progress.
@@ -24,4 +25,4 @@ MAXIMUM PLAYERS: INFINITE
 ===================================================================================
 NOTES: While you are in the Game Channel, you will NOT be able to change NICKs.
 NOTES: To allow a friendlier game environment, you cannot pass back the Potato to the one who passed you in the first place.
-NOTES: After a TOT number of turns (N° players + 3) the game will start asking to pass the Potato to inactive players.
+NOTES: After a TOT number of turns without playing, (N° players + 3) the game will start asking to pass the Potato to inactive players.
