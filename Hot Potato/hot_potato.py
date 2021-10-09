@@ -73,8 +73,8 @@ POTATO = " " + CONTROL_BOLD + CONTROL_COLOR + colors.ORANGE + "," + colors.BLACK
 
 min_players = 3  # DO NOT set to less than 3
 
-help_ = {"italiano" : "https://webchat.duckie.chat/uploads/b0cdb3762d6dcd9c/paste.txt",
-         "english" : "https://webchat.duckie.chat/uploads/e8e9b51897411a76/paste.txt"}
+help_ = {"italiano": "https://webchat.duckie.chat/uploads/b0cdb3762d6dcd9c/paste.txt",
+         "english": "https://webchat.duckie.chat/uploads/e8e9b51897411a76/paste.txt"}
 
 """
 The game only has string in Italian.
