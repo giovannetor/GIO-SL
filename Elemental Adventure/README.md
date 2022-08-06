@@ -33,3 +33,10 @@ Element: The Hero's Element.
 Hero: The Hero you're using.
 atk: The stat that defines how powerful a Hero is on the Field.
 rep: The stat that defines how much a Hero is worth._
+
+### NOTES
+- During the Configuration, a Log Chan shall be defined. This is the chan where the bot will
+send his logs, and can only be one, stated with the "#chan_name" format.
+- During the Configuration, a list of Game Chans shall be defined. These are the chans where the game
+is allowed to run. State one per line with the "#chan_name" format.
+- During the Configuration, you'll be able to choose a language for the game. The default one is Italian. _Available_:Italiano , English

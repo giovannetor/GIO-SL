@@ -27,7 +27,7 @@ import sopel.tools as tools
 from sopel.config.types import StaticSection, ListAttribute, ValidatedAttribute
 from sopel.formatting import colors, CONTROL_BOLD, CONTROL_COLOR, CONTROL_NORMAL
 
-game_chan = None
+GAME_CHAN = None
 
 NO = False
 YES = True
@@ -39,7 +39,7 @@ def setup(bot):
     bot.config.define_section("ElementalAdventure", ElementalAdventureConfigSection)
 
     # Set the allowed game channels
-    global game_chan
+    global GAME_CHAN
     global log_chan
     global elad_admins
     game_chan = bot.config.ElementalAdventure.gamechannels
@@ -918,7 +918,7 @@ class ElAdBot:
         if newchan in self.games:
             bot.reply(strings['CHANNEL_IN_USE'] % newchan)
             bot.say(
-                "[" + ELEMENTAL + "] : " + trigger.nick + " tried to move a game from " + oldchan + " to " + newchan + ", but the chan is full.",
+                "[" + ELEMENTAL + "] : " + trigger.nick + " tried to move a game from " + oldchan + " to " + newchan + ", but the channel is full.",
                 log_chan)
             return
         game = self.games.pop(oldchan)
@@ -956,9 +956,9 @@ def adrank(bot, trigger):
 @module.commands("elemental adventure", "elad", "ElAd")
 @module.example(".Elemental Adventure")
 @module.priority('high')
-@module.require_chanmsg("Ehy hi, please use this command in a chan.")
+@module.require_chanmsg("Ehy hi, please use this command in a channel.")
 def start(bot, trigger):
-    if trigger.sender in game_chan:
+    if trigger.sender in GAME_CHAN:
         elad.start(bot, trigger)
         bot.say("[" + ELEMENTAL + "] : START in " + trigger.sender + " by " + trigger.nick, log_chan)
 
@@ -966,7 +966,7 @@ def start(bot, trigger):
 @module.commands("language", "lan")
 @module.example(".language italiano", ".lan english")
 def language(bot, trigger):
-    if trigger.sender in game_chan:
+    if trigger.sender in GAME_CHAN:
         elad.language(bot, trigger)
 
 
@@ -974,7 +974,7 @@ def language(bot, trigger):
 @module.example(".adstop")
 @module.priority('high')
 def eladstop(bot, trigger):
-    if trigger.sender in game_chan and trigger.account in elad_admins:
+    if trigger.sender in GAME_CHAN and trigger.account in elad_admins:
         elad.stop(bot, trigger)
         bot.say("[" + ELEMENTAL + "] : Admin stopped a match in  " + trigger.sender, log_chan)
 
@@ -983,7 +983,7 @@ def eladstop(bot, trigger):
 @module.priority('high')
 @module.require_chanmsg
 def brisjoin(bot, trigger):
-    if trigger.sender in game_chan:
+    if trigger.sender in GAME_CHAN:
         elad.join(bot, trigger)
 
 
@@ -991,7 +991,7 @@ def brisjoin(bot, trigger):
 @module.priority('high')
 @module.require_chanmsg
 def brisquit(bot, trigger):
-    if trigger.sender in game_chan:
+    if trigger.sender in GAME_CHAN:
         elad.quit(bot, trigger)
 
 
@@ -1000,7 +1000,7 @@ def brisquit(bot, trigger):
 @module.require_admin("You're not an admin.")
 @module.example('.brismove #anotherchannel')
 def brismove(bot, trigger):
-    if trigger.sender in game_chan:
+    if trigger.sender in GAME_CHAN:
         elad.move_game(bot, trigger)
 
 
@@ -1008,7 +1008,7 @@ def brismove(bot, trigger):
 @module.priority('medium')
 @module.require_chanmsg
 def brisdeal(bot, trigger):
-    if trigger.sender in game_chan:
+    if trigger.sender in GAME_CHAN:
         elad.deal(bot, trigger)
 
 
@@ -1016,13 +1016,13 @@ def brisdeal(bot, trigger):
 @module.priority('medium')
 @module.require_chanmsg
 def unoplay(bot, trigger):
-    if trigger.sender in game_chan:
+    if trigger.sender in GAME_CHAN:
         elad.play(bot, trigger)
 
 
 @module.commands("teams", "tm")
 def teams(bot, trigger):
-    if trigger.sender in game_chan and trigger.account in elad_admins:
+    if trigger.sender in GAME_CHAN and trigger.account in elad_admins:
         elad.teams(bot, trigger)
 
 
@@ -1031,7 +1031,7 @@ def teams(bot, trigger):
 @module.priority('medium')
 @module.require_chanmsg
 def unocards(bot, trigger):
-    if trigger.sender in game_chan:
+    if trigger.sender in GAME_CHAN:
         elad.send_cards(bot, trigger)
 
 
@@ -1040,7 +1040,7 @@ def unocards(bot, trigger):
 @module.priority('low')
 def brishelp(bot, trigger):
     if trigger.group(3).lower() == "elad":
-        if trigger.sender in game_chan:
+        if trigger.sender in GAME_CHAN:
             if "italiano" in trigger.group(2).lower():
                 bot.notice("GUIDA: " + string_help_ita, trigger.nick)
                 bot.notice("REGOLE DEL GIOCO: " + rules_ita, trigger.nick)

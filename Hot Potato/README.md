@@ -22,9 +22,12 @@ the Potato in hand loses and is eliminated.
 2) `.adstop potato` = Forcibly stop the game in progress in the channel in which it is written.
 3) `.adpotatostats` = Get another user's STATS.
 --- 
-
-**NOTES**: While you are in the Game Channel, you will NOT be able to change NICKs. 
-
-**NOTES**: To allow a friendlier game environment, you cannot pass back the Potato to the one who passed you in the first place.
-
-**NOTES**: After a TOT number of turns (N° players + 3) the game will start asking to pass the Potato to inactive players.
+### NOTES
+- During the Configuration, a Log Chan shall be defined. This is the chan where the bot will
+send his logs, and can only be one, stated with the "#chan_name" format.
+- During the Configuration, a list of Game Chans shall be defined. These are the chans where the game
+is allowed to run. State one per line with the "#chan_name" format.
+- During the Configuration, you'll be able to choose a language for the game. The default one is Italian. _Available_:Italiano , English
+- While you are in the Game Channel, you will NOT be able to change NICKs. 
+- To allow a friendlier game environment, you cannot pass back the Potato to the one who passed you in the first place.
+- After a TOT number of turns (N° players + 3) the game will start asking to pass the Potato to inactive players.

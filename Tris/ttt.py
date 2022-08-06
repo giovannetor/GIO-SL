@@ -26,7 +26,8 @@ settings = config.Config('/Users/giova/.sopel/default.cfg')  # replace with the 
 
 from sopel.config.types import StaticSection, ListAttribute, ValidatedAttribute
 
-game_chan = None
+GAME_CHAN = None
+LOG_CHAN = None
 
 
 # Called when the module gets loaded
@@ -34,10 +35,10 @@ def setup(bot):
     bot.config.define_section("TicTacToe", TicTacToeConfigSection)
 
     # Set the allowed game channels
-    global game_chan
-    global log_chan
-    game_chan = bot.config.TicTacToe.gamechannels
-    log_chan = bot.config.TicTacToe.logchannels
+    global GAME_CHAN
+    global LOG_CHAN
+    GAME_CHAN = bot.config.TicTacToe.gamechannels
+    LOG_CHAN = bot.config.TicTacToe.logchannels
 
 
 # Called when the module gets configured
@@ -52,11 +53,6 @@ class TicTacToeConfigSection(StaticSection):
     gamechannels = ListAttribute("gamechannels")
     logchannels = ValidatedAttribute("logchannels")
 
-
-"""
-I didn't really understand how to link the code to the config file, so
-you'll have to write the [ttt] section in the config file manually... :)
-"""
 
 # Format for the X, O and the word "TicTacToe" in-game
 X = CONTROL_BOLD + CONTROL_COLOR + colors.LIGHT_CYAN + "X" + CONTROL_NORMAL
@@ -168,7 +164,7 @@ class tttgame:  # this class thinks about the "RULES" side of the game
             bot.say(self.strings["win"] % player)
 
             self.players[player]["score"] += 1
-            self.reset(bot, trigger, place = trigger.sender)
+            self.reset(bot, trigger, place=trigger.sender)
         else:
             self.currentPlayer = 0 if self.currentPlayer == 1 else 1
 
@@ -177,7 +173,7 @@ class tttgame:  # this class thinks about the "RULES" side of the game
 
                 self.currentPlayer = 0 if self.currentPlayer == 1 else 1
 
-                self.reset(bot, trigger, place = trigger.sender)
+                self.reset(bot, trigger, place=trigger.sender)
                 return
             bot.say(self.strings["next_turn"] % self.playerOrder[self.currentPlayer])
 
@@ -185,7 +181,7 @@ class tttgame:  # this class thinks about the "RULES" side of the game
         for player in self.players:
             if self.players[player]["score"] == win_games:
                 bot.say(self.strings["final_win"] % player)
-                self.endgame(bot, trigger, player_win = player, place = place)
+                self.endgame(bot, trigger, player_win=player, place=place)
                 return
             self.players[player]["squares"].clear()
 
@@ -249,18 +245,18 @@ class tttbot:  # This class thinks about the "LOGISCIT" part of the game
             bot.say(self.strings['game_started'])
             bot.say(
                 "[" + TRIS + "] : match" + CONTROL_COLOR + colors.LIME + " STARTED" + CONTROL_NORMAL + " in " +  # This log says where and by who a match is started
-                trigger.sender + " by: " + CONTROL_COLOR + colors.LIGHT_CYAN + trigger.nick, log_chan)
+                trigger.sender + " by: " + CONTROL_COLOR + colors.LIGHT_CYAN + trigger.nick, LOG_CHAN)
             self.games[trigger.sender] = tttgame(trigger)
             self.join(bot, trigger)
 
-    def endgame(self, bot, trigger, player_win, place, forced = False, partquit = False):
+    def endgame(self, bot, trigger, player_win, place, forced=False, partquit=False):
         if trigger.sender not in self.games:
             return
         if forced:
             # This log says where and by what admin the match is stopped
             bot.say(
                 "[" + TRIS + "] : match" + CONTROL_COLOR + colors.RED + " STOPPED" + CONTROL_NORMAL + " in " + trigger.sender + " by: " + CONTROL_COLOR + colors.LIGHT_CYAN + trigger.nick,
-                log_chan)
+                LOG_CHAN)
             bot.say(self.strings["adstop"])
 
         elif partquit:
@@ -273,12 +269,12 @@ class tttbot:  # This class thinks about the "LOGISCIT" part of the game
                 pl_win = "NONE"
             bot.say(
                 "[" + TRIS + "] : match" + CONTROL_COLOR + colors.YELLOW + " ENDED " + CONTROL_NORMAL + "in "  # Where and who won the match
-                + place + ". Winner: " + CONTROL_COLOR + colors.LIGHT_CYAN + pl_win, log_chan)
+                + place + ". Winner: " + CONTROL_COLOR + colors.LIGHT_CYAN + pl_win, LOG_CHAN)
 
         else:
             bot.say(
                 "[" + TRIS + "] : match" + CONTROL_COLOR + colors.YELLOW + " ENDED " + CONTROL_NORMAL + "in "  # Where and who won the match
-                + place + ". Winner: " + CONTROL_COLOR + colors.LIGHT_CYAN + player_win, log_chan)
+                + place + ". Winner: " + CONTROL_COLOR + colors.LIGHT_CYAN + player_win, LOG_CHAN)
         del self.games[place]
 
     def play(self, bot, trigger):
@@ -306,57 +302,57 @@ ttt = tttbot()
 @plugin.thread(True)
 @plugin.commands("grid", "gr")
 def grid(bot, trigger):
-    if trigger.sender in game_chan:
+    if trigger.sender in GAME_CHAN:
         ttt.print_grid(bot, trigger)
 
 
 @plugin.commands("ttt", "TicTacToe", "tictactoe")
 def ttt_start(bot, trigger):
-    if trigger.sender in game_chan:
+    if trigger.sender in GAME_CHAN:
         ttt.start(bot, trigger)
 
 
 @plugin.commands("join", "jo")
 def ttt_join(bot, trigger):
-    if trigger.sender in game_chan:
+    if trigger.sender in GAME_CHAN:
         ttt.join(bot, trigger)
 
 
 @plugin.commands("adstop")
 @plugin.example(".adstop ttt", ".adstop tictactoe")
 def adstop(bot, trigger):
-    if trigger.sender in game_chan and trigger.group(3) == "ttt" or trigger.group(3) == "tictactoe":
-        ttt.endgame(bot, trigger, forced = True, place = trigger.sender, partquit = False, player_win = None)
+    if trigger.sender in GAME_CHAN and trigger.group(3) == "ttt" or trigger.group(3) == "tictactoe":
+        ttt.endgame(bot, trigger, forced=True, place=trigger.sender, partquit=False, player_win=None)
 
 
 @plugin.commands("play", "pl")
 @plugin.example(".play a2", ".pl C3")
 def play(bot, trigger):
-    if trigger.sender in game_chan:
+    if trigger.sender in GAME_CHAN:
         ttt.play(bot, trigger)
 
 
 @plugin.commands("quit", "qu")
 def quit(bot, trigger):
-    if trigger.sender in game_chan:
-        ttt.endgame(bot, trigger, forced = False, place = trigger.sender, partquit = True, player_win = trigger.nick)
+    if trigger.sender in GAME_CHAN:
+        ttt.endgame(bot, trigger, forced=False, place=trigger.sender, partquit=True, player_win=trigger.nick)
 
 
 @plugin.commands("help ttt", "help tictactoe")
 @plugin.example(".help ttt", ".help tictactoe")
 def brishelp(bot, trigger):
-    if trigger.sender in game_chan:
+    if trigger.sender in GAME_CHAN:
         bot.notice(CONTROL_BOLD + CONTROL_COLOR + colors.YELLOW + "GUIDE: " + CONTROL_NORMAL + string_help_eng,
                    trigger.nick)
 
 
 @plugin.event("PART")
 def part(bot, trigger):
-    if trigger.sender in game_chan:
-        ttt.endgame(bot, trigger, forced = False, place = trigger.sender, partquit = True, player_win = trigger.nick)
+    if trigger.sender in GAME_CHAN:
+        ttt.endgame(bot, trigger, forced=False, place=trigger.sender, partquit=True, player_win=trigger.nick)
 
 
 @plugin.event("QUIT")
 def quit_(bot, trigger):
-    if trigger.sender in game_chan:
-        ttt.endgame(bot, trigger, forced = False, place = trigger.sender, partquit = True, player_win = trigger.nick)
+    if trigger.sender in GAME_CHAN:
+        ttt.endgame(bot, trigger, forced=False, place=trigger.sender, partquit=True, player_win=trigger.nick)
